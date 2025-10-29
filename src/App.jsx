@@ -133,9 +133,30 @@ const GlobalStyles = () => (
       font-family: 'Playfair Display', serif;
     }
     
-    /* Scroll suave nativo */
+    /* Configuración de scroll suave y scrollbar personalizada */
     html {
-      scroll-behavior: smooth;
+      scroll-padding-top: 80px; /* Ajuste para el header fijo */
+      scrollbar-width: thin;
+      scrollbar-color: #8B5CF6 #F3F4F6;
+    }
+    
+    /* Personalización de scrollbar para webkit (Chrome, Safari, etc.) */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #F3F4F6;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background-color: #8B5CF6;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: #7c4ddb;
     }
     
     /* Clase para desvanecer bordes de imagen (degradado más amplio) */
@@ -151,8 +172,13 @@ const GlobalStyles = () => (
     }
     
     .animate-infinite-scroll {
-      /* CAMBIO: Duración de 40s a 20s para ir más rápido */
-      animation: infinite-scroll 20s linear infinite;
+      animation: infinite-scroll 40s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+    }
+
+    .hover\:pause-animation:hover {
+      animation-play-state: paused;
+      transition: transform 0.3s ease;
+      transform: scale(0.99);
     }
     
     .nav-link {
@@ -253,13 +279,47 @@ export default function App() {
     return () => { document.body.style.overflow = 'auto'; };
   }, [selectedProject]);
 
-  // CAMBIO: Volvemos a la función de scroll nativa
+  // Función de scroll suave mejorada con animación personalizada
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      const headerOffset = 80;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      
+      const duration = 1000; // Duración en ms (1.5 segundos)
+      const start = window.pageYOffset;
+      const distance = offsetPosition - start;
+      let startTime = null;
+
+      function animation(currentTime) {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        
+        // Función de easing para un movimiento más suave
+        const easing = t => t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1;
+        
+        window.scrollTo(0, start + (distance * easing(progress)));
+
+        if (timeElapsed < duration) {
+          requestAnimationFrame(animation);
+        }
+      }
+
+      requestAnimationFrame(animation);
     }
   };
+
+  // Efecto para manejar el scroll suave en la carga inicial si hay hash en la URL
+  useEffect(() => {
+    if (window.location.hash) {
+      const id = window.location.hash.substring(1);
+      setTimeout(() => {
+        scrollToSection(id);
+      }, 100);
+    }
+  }, []);
 
   const LangButton = ({ code, children }) => (
     <button
@@ -486,8 +546,13 @@ export default function App() {
                     key={`${project.id}-${index}`}
                     className="portfolio-item group relative overflow-hidden rounded-lg cursor-pointer flex-shrink-0 w-80 md:w-96 mx-4"
                     onClick={() => setSelectedProject(project)}
-                    whileHover={{ scale: 1.03 }} 
-                    transition={{ type: 'spring', stiffness: 300 }}
+                    whileHover={{ scale: 1.05, rotate: 1 }} 
+                    transition={{ 
+                      type: 'spring', 
+                      stiffness: 200, 
+                      damping: 15,
+                      mass: 1
+                    }}
                   >
                     <img 
                       src={project.imgSrc.replace('800x600', '500x500')} 
