@@ -9,12 +9,9 @@ import { Home, User, GalleryVerticalEnd, Mail, Instagram, MessageCircle } from '
 // NOTA: Cambia estas URLs por tus imágenes locales, ej: '/img/proyecto-1.jpg'
 // Coloca esas imágenes en la carpeta `public/img/` de tu proyecto Vite.
 const projectData = [
-  { id: 1, imgSrc: "/img/portfolio-1.jpg" },
-  { id: 2, imgSrc: "/img/portfolio-2.jpg" },
-  { id: 3, imgSrc: "/img/portfolio-3.jpg" },
-  { id: 4, imgSrc: "/img/portfolio-4.jpg" },
-  { id: 5, imgSrc: "/img/portfolio-5.jpg" },
-  { id: 6, imgSrc: "/img/portfolio-6.jpg" },
+  { id: 1, imgSrc: "https://raw.githubusercontent.com/chesterchasis/sonny/refs/heads/main/public/img/porfolio1.jpg" },
+  { id: 2, imgSrc: "https://raw.githubusercontent.com/chesterchasis/sonny/refs/heads/main/public/img/porfolio2.jpg" },
+  { id: 3, imgSrc: "https://raw.githubusercontent.com/chesterchasis/sonny/refs/heads/main/public/img/porfolio3.jpg" },
 ];
 
 // --- Traducciones (Inglés y Eslovaco) ---
@@ -45,9 +42,6 @@ const translations = {
         1: { title: "Floral Portrait", desc: "Digital illustration (Procreate). A piece exploring the blend of nature and human form." },
         2: { title: "Hands", desc: "Graphite drawing (Traditional). A study on light, shadow, and anatomy." },
         3: { title: "Poster Design", desc: "School project (Typography). Created for a fictional music festival, focusing on bold type." },
-        4: { title: "Coffee Shop", desc: "Scene (Illustrator). A vector illustration capturing a cozy atmosphere." },
-        5: { title: "Branding", desc: "School project (Logo). Identity design for a conceptual eco-friendly brand." },
-        6: { title: "Sketches", desc: "Character study (Traditional). Exploring expressions and forms for a personal project." },
       }
     },
     process: {
@@ -94,9 +88,6 @@ const translations = {
         1: { title: "Kvetinový portrét", desc: "Digitálna ilustrácia (Procreate). Dielo skúmajúce spojenie prírody a ľudskej podoby." },
         2: { title: "Ruky", desc: "Kresba grafitom (Tradičná). Štúdia svetla, tieňa a anatómie." },
         3: { title: "Dizajn plagátu", desc: "Školský projekt (Typografia). Vytvorené pre fiktívny hudobný festival so zameraním na výrazné písmo." },
-        4: { title: "Kaviareň", desc: "Scéna (Illustrator). Vektorová ilustrácia zachytávajúca útulnú atmosféru." },
-        5: { title: "Branding", desc: "Školský projekt (Logo). Návrh identity pre koncepčnú ekologickú značku." },
-        6: { title: "Skice", desc: "Štúdia postáv (Tradičná). Skúmanie výrazov a foriem pre osobný projekt." },
       }
     },
     process: {
@@ -485,7 +476,7 @@ export default function App() {
 
             {/* Imagen Hero */}
             <div className="w-full md:w-2/5">
-              <img src="/img/hero-portrait.jpg"
+              <img src="/img/digitalart.jpg"
                 alt="Ilustración de Sonia"
                 className="w-full h-auto object-cover fade-image-edges"
                 onError={(e) => e.target.src = 'https://placehold.co/600x800/f0f0f0/1A1A1A?text=Digital+Art&font=playfair'} />
@@ -504,7 +495,7 @@ export default function App() {
         >
           <div className="container mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-12">
             <div className="w-full md:w-1/2 lg:w-2/5">
-              <img src="/img/about-workspace.jpg"
+              <img src="https://raw.githubusercontent.com/chesterchasis/sonny/refs/heads/main/public/img/aboutme.jpg"
                 alt="Espacio de trabajo de Sonia"
                 className="w-full h-auto object-cover aspect-square fade-image-edges"
                 onError={(e) => e.target.src = 'https://placehold.co/500x500/f0f0f0/1A1A1A?text=Sketches&font=playfair'} />
@@ -544,7 +535,7 @@ export default function App() {
                 return (
                   <motion.div
                     key={`${project.id}-${index}`}
-                    className="portfolio-item group relative overflow-hidden rounded-lg cursor-pointer flex-shrink-0 w-80 md:w-96 mx-4"
+                    className="portfolio-item group relative overflow-hidden rounded-lg cursor-pointer flex-shrink-0 w-96 md:w-[32rem] mx-4"
                     onClick={() => setSelectedProject(project)}
                     whileHover={{ scale: 1.05, rotate: 1 }}
                     transition={{
