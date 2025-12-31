@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 // IMPORTACIÓN ELIMINADA: Ya no usamos react-scroll
 // import { Link as ScrollLink } from 'react-scroll'; 
 // IMPORTACIÓN AÑADIDA: Para los iconos
-import { Home, User, GalleryVerticalEnd, Mail, Instagram, MessageCircle } from 'lucide-react';
+import { Home, User, GalleryVerticalEnd, Mail, Instagram } from 'lucide-react';
 
 // --- Datos del Portafolio (Separados de las traducciones) ---
 // NOTA: Cambia estas URLs por tus imágenes locales, ej: '/img/proyecto-1.jpg'
@@ -54,9 +54,8 @@ const translations = {
     contact: {
       title: 'Let\'s connect!',
       subtitle: 'Interested in collaborating or just want to chat? Contact me via my email or social media. 💌',
-      mail: 'sonia.designs@gmail.com',
+      mail: 'kortisova.sona2008@gmail.com',
       ariaInsta: 'Instagram',
-      ariaTiktok: 'TikTok', // Usamos MessageCircle para este
       ariaMail: 'Email',
     },
     footer: {
@@ -100,9 +99,8 @@ const translations = {
     contact: {
       title: 'Spojme sa!',
       subtitle: 'Máte záujem o spoluprácu alebo sa chcete len porozprávať? Kontaktujte ma e-mailom alebo sociálnych sieťach. 💌',
-      mail: 'sonia.designs@gmail.com',
+      mail: 'kortisova.sona2008@gmail.com',
       ariaInsta: 'Instagram',
-      ariaTiktok: 'TikTok',
       ariaMail: 'Email',
     },
     footer: {
@@ -152,8 +150,8 @@ const GlobalStyles = () => (
     
     /* Clase para desvanecer bordes de imagen (degradado más amplio) */
     .fade-image-edges {
-      -webkit-mask-image: radial-gradient(circle, black 65%, transparent 100%);
-      mask-image: radial-gradient(circle, black 65%, transparent 100%);
+      -webkit-mask-image: radial-gradient(circle, black 45%, transparent 100%);
+      mask-image: radial-gradient(circle, black 45%, transparent 100%);
     }
 
     /* --- Animación de Scroll Infinito --- */
@@ -476,7 +474,7 @@ export default function App() {
 
             {/* Imagen Hero */}
             <div className="w-full md:w-2/5">
-              <img src="/img/digitalart.jpg"
+              <img src="https://raw.githubusercontent.com/chesterchasis/sonny/refs/heads/main/public/img/digitalart.jpg"
                 alt="Ilustración de Sonia"
                 className="w-full h-auto object-cover fade-image-edges"
                 onError={(e) => e.target.src = 'https://placehold.co/600x800/f0f0f0/1A1A1A?text=Digital+Art&font=playfair'} />
@@ -609,28 +607,14 @@ export default function App() {
             <div className="flex justify-center space-x-6 md:space-x-12 mt-12">
               {/* Instagram */}
               <motion.a
-                href="#"
+                href="https://www.instagram.com/sonia._.artwork?igsh=MTc4NTJjZjF1ZTF6aw=="
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[#4A4A4A] hover:text-[#000000] transition-colors duration-200"
                 aria-label={t.contact.ariaInsta}
                 whileHover={{ scale: 1.1, y: -5 }}
               >
-                {/* CAMBIO: Icono profesional */}
                 <Instagram className="w-10 h-10" strokeWidth={1.5} />
-              </motion.a>
-
-              {/* TikTok */}
-              <motion.a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#4A4A4A] hover:text-[#000000] transition-colors duration-200"
-                aria-label={t.contact.ariaTiktok}
-                whileHover={{ scale: 1.1, y: -5 }}
-              >
-                {/* CAMBIO: Icono profesional (Tiktok no existe, usamos MessageCircle) */}
-                <MessageCircle className="w-10 h-10" strokeWidth={1.5} />
               </motion.a>
 
               {/* Mail */}
@@ -640,7 +624,6 @@ export default function App() {
                 aria-label={t.contact.ariaMail}
                 whileHover={{ scale: 1.1, y: -5 }}
               >
-                {/* CAMBIO: Icono profesional */}
                 <Mail className="w-10 h-10" strokeWidth={1.5} />
               </motion.a>
             </div>
