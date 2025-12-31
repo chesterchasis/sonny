@@ -586,11 +586,11 @@ export default function App() {
             <p className="text-lg text-center text-[#4A4A4A] mb-12">{t.process.subtitle}</p>
 
             <div className="flex flex-wrap justify-center gap-6">
-              <img src="/img/miproceso1.jpg"
+              <img src="https://raw.githubusercontent.com/chesterchasis/sonny/refs/heads/main/public/img/miproceso1.jpg"
                 alt={t.process.alt1}
                 className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 fade-image-edges"
                 onError={(e) => e.target.src = 'https://placehold.co/400x300/f0f0f0/1A1A1A?text=Sketch&font=poppins'} />
-              <img src="/img/miproceso2.jpg"
+              <img src="https://raw.githubusercontent.com/chesterchasis/sonny/refs/heads/main/public/img/miproceso2.jpg"
                 alt={t.process.alt2}
                 className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 fade-image-edges"
                 onError={(e) => e.target.src = 'https://placehold.co/400x300/f0f0f0/1A1A1A?text=Colors&font=poppins'} />
