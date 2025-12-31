@@ -9,12 +9,12 @@ import { Home, User, GalleryVerticalEnd, Mail, Instagram, MessageCircle } from '
 // NOTA: Cambia estas URLs por tus imágenes locales, ej: '/img/proyecto-1.jpg'
 // Coloca esas imágenes en la carpeta `public/img/` de tu proyecto Vite.
 const projectData = [
-  { id: 1, imgSrc: "https://placehold.co/800x600/E9D8E4/8B5CF6?text=Digital+Illustration&font=playfair" },
-  { id: 2, imgSrc: "https://placehold.co/800x600/D4E7D4/8B5CF6?text=Traditional+Art&font=playfair" },
-  { id: 3, imgSrc: "https://placehold.co/800x600/E0E0E0/8B5CF6?text=School+Project&font=playfair" },
-  { id: 4, imgSrc: "https://placehold.co/800x600/F0E6D2/8B5CF6?text=Digital+Illustration&font=playfair" },
-  { id: 5, imgSrc: "https://placehold.co/800x600/D2EBF0/8B5CF6?text=School+Project&font=playfair" },
-  { id: 6, imgSrc: "https://placehold.co/800x600/E8E8E8/8B5CF6?text=Traditional+Art&font=playfair" },
+  { id: 1, imgSrc: "/img/portfolio-1.jpg" },
+  { id: 2, imgSrc: "/img/portfolio-2.jpg" },
+  { id: 3, imgSrc: "/img/portfolio-3.jpg" },
+  { id: 4, imgSrc: "/img/portfolio-4.jpg" },
+  { id: 5, imgSrc: "/img/portfolio-5.jpg" },
+  { id: 6, imgSrc: "/img/portfolio-6.jpg" },
 ];
 
 // --- Traducciones (Inglés y Eslovaco) ---
@@ -126,8 +126,8 @@ const GlobalStyles = () => (
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap');
     body {
       font-family: 'Poppins', sans-serif;
-      background-color: #FBFBF8; /* Fondo de página blanco roto */
-      color: #4A2E5F; /* Color de texto principal violeta oscuro */
+      background-color: #FFFFFF; /* Fondo blanco puro */
+      color: #1A1A1A; /* Color de texto principal casi negro */
     }
     h1, h2, h3, h4, h5, h6, .font-playfair {
       font-family: 'Playfair Display', serif;
@@ -137,7 +137,7 @@ const GlobalStyles = () => (
     html {
       scroll-padding-top: 80px; /* Ajuste para el header fijo */
       scrollbar-width: thin;
-      scrollbar-color: #8B5CF6 #F3F4F6;
+      scrollbar-color: #666666 #F3F4F6;
     }
     
     /* Personalización de scrollbar para webkit (Chrome, Safari, etc.) */
@@ -150,13 +150,13 @@ const GlobalStyles = () => (
     }
     
     ::-webkit-scrollbar-thumb {
-      background-color: #8B5CF6;
+      background-color: #666666;
       border-radius: 4px;
       transition: all 0.3s ease;
     }
     
     ::-webkit-scrollbar-thumb:hover {
-      background-color: #7c4ddb;
+      background-color: #444444;
     }
     
     /* Clase para desvanecer bordes de imagen (degradado más amplio) */
@@ -182,11 +182,11 @@ const GlobalStyles = () => (
     }
     
     .nav-link {
-      @apply text-[#4A2E5F] hover:text-[#8B5CF6] transition-colors duration-200 cursor-pointer py-2;
+      @apply text-[#1A1A1A] hover:text-[#000000] transition-colors duration-200 cursor-pointer py-2;
     }
     .nav-link.active {
       /* Este 'active' es manejado por react-scroll, pero lo dejamos por si acaso */
-      @apply text-[#8B5CF6] font-semibold;
+      @apply text-[#000000] font-semibold;
     }
     
   `}</style>
@@ -225,16 +225,16 @@ const PortfolioModal = ({ project, details, onClose }) => {
         >
           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
-        
+
         <div className="grid md:grid-cols-2">
           {/* Imagen */}
           <div className="bg-gray-100 flex items-center justify-center">
-             <img 
-                src={project.imgSrc.replace('500x500', '800x600')} // Cargar imagen más grande
-                alt={details.title} 
-                className="w-full h-full object-cover max-h-[80vh]"
-                onError={(e) => e.target.src='https://placehold.co/800x600/cccccc/999999?text=Error&font=poppins'}
-              />
+            <img
+              src={project.imgSrc}
+              alt={details.title}
+              className="w-full h-full object-cover max-h-[80vh]"
+              onError={(e) => e.target.src = 'https://placehold.co/800x600/cccccc/999999?text=Image+Not+Found&font=poppins'}
+            />
           </div>
           {/* Detalles */}
           <div className="p-8 flex flex-col justify-center">
@@ -255,16 +255,16 @@ export default function App() {
   const [lang, setLang] = useState('en'); // 'en' o 'sk'
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null); // Para el modal
-  
+
   const t = translations[lang]; // Objeto de traducción actual
 
   // Variantes de animación para Framer Motion
   const sectionVariants = {
     hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { duration: 0.6, ease: "easeOut" } 
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" }
     }
   };
 
@@ -286,7 +286,7 @@ export default function App() {
       const headerOffset = 80;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      
+
       const duration = 1000; // Duración en ms (1.5 segundos)
       const start = window.pageYOffset;
       const distance = offsetPosition - start;
@@ -296,10 +296,10 @@ export default function App() {
         if (startTime === null) startTime = currentTime;
         const timeElapsed = currentTime - startTime;
         const progress = Math.min(timeElapsed / duration, 1);
-        
+
         // Función de easing para un movimiento más suave
-        const easing = t => t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1;
-        
+        const easing = t => t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+
         window.scrollTo(0, start + (distance * easing(progress)));
 
         if (timeElapsed < duration) {
@@ -324,7 +324,7 @@ export default function App() {
   const LangButton = ({ code, children }) => (
     <button
       onClick={() => setLang(code)}
-      className={`font-medium ${lang === code ? 'text-[#8B5CF6]' : 'text-gray-500 hover:text-gray-900'}`}
+      className={`font-medium ${lang === code ? 'text-[#000000] font-bold' : 'text-gray-500 hover:text-gray-900'}`}
     >
       {children}
     </button>
@@ -342,13 +342,13 @@ export default function App() {
           <nav className="flex justify-between items-center">
             {/* Logo */}
             {/* CAMBIO: Usando <a> con onClick */}
-            <a 
-              onClick={() => scrollToSection('inicio')} 
-              className="text-3xl font-['Playfair_Display'] font-bold text-[#4A2E5F] cursor-pointer"
+            <a
+              onClick={() => scrollToSection('inicio')}
+              className="text-3xl font-['Playfair_Display'] font-bold text-[#1A1A1A] cursor-pointer"
             >
-              Sonia<span className="text-[#8B5CF6]">Art</span>
+              Sonia<span className="text-[#000000]">Art</span>
             </a>
-            
+
             {/* Menú de escritorio */}
             <div className="hidden md:flex items-center space-x-8">
               {/* CAMBIO: Usando <a> con onClick */}
@@ -356,14 +356,14 @@ export default function App() {
               <a onClick={() => scrollToSection('sobre-mi')} className="nav-link">{t.nav.about}</a>
               <a onClick={() => scrollToSection('portafolio')} className="nav-link">{t.nav.portfolio}</a>
               <a onClick={() => scrollToSection('contacto')} className="nav-link">{t.nav.contact}</a>
-              
+
               <div className="flex space-x-2 pl-4">
                 <LangButton code="en">EN</LangButton>
                 <span className="text-gray-300">|</span>
                 <LangButton code="sk">SK</LangButton>
               </div>
             </div>
-            
+
             {/* Botón de Menú Móvil */}
             {/* CAMBIO: Lógica de animación del menú móvil */}
             <div className="md:hidden flex items-center space-x-2">
@@ -395,27 +395,27 @@ export default function App() {
                     className="flex items-center space-x-4"
                   >
                     {/* CAMBIO: Usando <a> con onClick */}
-                    <a onClick={() => { scrollToSection('inicio'); setIsMenuOpen(false); }} className="text-[#4A2E5F] hover:text-[#8B5CF6] cursor-pointer" aria-label={t.nav.home}>
+                    <a onClick={() => { scrollToSection('inicio'); setIsMenuOpen(false); }} className="text-[#1A1A1A] hover:text-[#000000] cursor-pointer" aria-label={t.nav.home}>
                       <Home className="w-6 h-6" strokeWidth={1.5} />
                     </a>
                     {/* CAMBIO: Usando <a> con onClick */}
-                    <a onClick={() => { scrollToSection('sobre-mi'); setIsMenuOpen(false); }} className="text-[#4A2E5F] hover:text-[#8B5CF6] cursor-pointer" aria-label={t.nav.about}>
+                    <a onClick={() => { scrollToSection('sobre-mi'); setIsMenuOpen(false); }} className="text-[#1A1A1A] hover:text-[#000000] cursor-pointer" aria-label={t.nav.about}>
                       <User className="w-6 h-6" strokeWidth={1.5} />
                     </a>
                     {/* CAMBIO: Usando <a> con onClick */}
-                    <a onClick={() => { scrollToSection('portafolio'); setIsMenuOpen(false); }} className="text-[#4A2E5F] hover:text-[#8B5CF6] cursor-pointer" aria-label={t.nav.portfolio}>
+                    <a onClick={() => { scrollToSection('portafolio'); setIsMenuOpen(false); }} className="text-[#1A1A1A] hover:text-[#000000] cursor-pointer" aria-label={t.nav.portfolio}>
                       <GalleryVerticalEnd className="w-6 h-6" strokeWidth={1.5} />
                     </a>
                     {/* CAMBIO: Usando <a> con onClick */}
-                    <a onClick={() => { scrollToSection('contacto'); setIsMenuOpen(false); }} className="text-[#4A2E5F] hover:text-[#8B5CF6] cursor-pointer" aria-label={t.nav.contact}>
+                    <a onClick={() => { scrollToSection('contacto'); setIsMenuOpen(false); }} className="text-[#1A1A1A] hover:text-[#000000] cursor-pointer" aria-label={t.nav.contact}>
                       <Mail className="w-6 h-6" strokeWidth={1.5} />
                     </a>
                   </motion.div>
                 )}
               </AnimatePresence>
-              
+
               {/* Icono de Hamburguesa / Cerrar */}
-              <button onClick={() => setIsMenuOpen(is => !is)} className="text-[#4A2E5F] focus:outline-none z-10">
+              <button onClick={() => setIsMenuOpen(is => !is)} className="text-[#1A1A1A] focus:outline-none z-10">
                 <AnimatePresence mode="wait">
                   {!isMenuOpen ? (
                     <motion.svg
@@ -450,9 +450,9 @@ export default function App() {
       {/* CAMBIO: Eliminado el menú lateral de emojis/iconos */}
 
       <main>
-        
+
         {/* ====== Sección Hero ====== */}
-        <motion.section 
+        <motion.section
           id="inicio"
           variants={sectionVariants}
           initial="hidden"
@@ -463,10 +463,10 @@ export default function App() {
           <div className="container mx-auto px-6 py-16 flex flex-col md:flex-row items-center justify-between">
             {/* Texto Hero */}
             <div className="w-full md:w-1/2 text-center md:text-left mb-10 md:mb-0">
-              <h1 className="text-5xl md:text-7xl font-['Playfair_Display'] font-bold text-[#4A2E5F] mb-4">
+              <h1 className="text-5xl md:text-7xl font-['Playfair_Display'] font-bold text-[#1A1A1A] mb-4">
                 {t.hero.greeting}
               </h1>
-              <p className="text-xl md:text-2xl text-[#6D4C82] mb-8">
+              <p className="text-xl md:text-2xl text-[#4A4A4A] mb-8">
                 {t.hero.subtitle}
               </p>
               {/* CAMBIO: Usando <a> con onClick para el botón CTA */}
@@ -474,45 +474,45 @@ export default function App() {
                 whileHover={{ scale: 1.05, y: -2 }}
                 transition={{ type: 'spring', stiffness: 300 }}
               >
-                <a 
+                <a
                   onClick={() => scrollToSection('portafolio')}
-                  className="inline-block bg-[#8B5CF6] text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-[#7a4ee0] hover:shadow-xl transition-all duration-300 cursor-pointer"
+                  className="inline-block bg-[#1A1A1A] text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-[#000000] hover:shadow-xl transition-all duration-300 cursor-pointer"
                 >
                   {t.hero.cta}
                 </a>
               </motion.div>
             </div>
-            
+
             {/* Imagen Hero */}
             <div className="w-full md:w-2/5">
-              <img src="https://placehold.co/600x800/f0f0f0/8B5CF6?text=Artistic+Portrait&font=playfair" 
-                   alt="Ilustración de Sonia"
-                   className="w-full h-auto object-cover fade-image-edges" 
-                   onError={(e) => e.target.src='https://placehold.co/600x800/f0f0f0/8B5CF6?text=Digital+Art&font=playfair'}/>
+              <img src="/img/hero-portrait.jpg"
+                alt="Ilustración de Sonia"
+                className="w-full h-auto object-cover fade-image-edges"
+                onError={(e) => e.target.src = 'https://placehold.co/600x800/f0f0f0/1A1A1A?text=Digital+Art&font=playfair'} />
             </div>
           </div>
         </motion.section>
 
         {/* ====== Sección Sobre Mí ====== */}
-        <motion.section 
-          id="sobre-mi" 
+        <motion.section
+          id="sobre-mi"
           variants={sectionVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
-          className="py-24 bg-white" 
+          className="py-24 bg-white"
         >
           <div className="container mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-12">
             <div className="w-full md:w-1/2 lg:w-2/5">
-              <img src="https://placehold.co/500x500/f0f0f0/8B5CF6?text=My+Desk&font=playfair" 
-                   alt="Espacio de trabajo de Sonia"
-                   className="w-full h-auto object-cover aspect-square fade-image-edges" 
-                   onError={(e) => e.target.src='https://placehold.co/500x500/f0f0f0/8B5CF6?text=Sketches&font=playfair'}/>
+              <img src="/img/about-workspace.jpg"
+                alt="Espacio de trabajo de Sonia"
+                className="w-full h-auto object-cover aspect-square fade-image-edges"
+                onError={(e) => e.target.src = 'https://placehold.co/500x500/f0f0f0/1A1A1A?text=Sketches&font=playfair'} />
             </div>
             <div className="w-full md:w-1/2 lg:w-3/5 text-center md:text-left">
-              <h2 className="text-4xl font-['Playfair_Display'] font-bold text-[#4A2E5F] mb-6">{t.about.title}</h2>
-              <p className="text-lg text-[#6D4C82] leading-relaxed mb-4" dangerouslySetInnerHTML={{ __html: t.about.p1 }} />
-              <p className="text-lg text-[#6D4C82] leading-relaxed">
+              <h2 className="text-4xl font-['Playfair_Display'] font-bold text-[#1A1A1A] mb-6">{t.about.title}</h2>
+              <p className="text-lg text-[#4A4A4A] leading-relaxed mb-4" dangerouslySetInnerHTML={{ __html: t.about.p1 }} />
+              <p className="text-lg text-[#4A4A4A] leading-relaxed">
                 {t.about.p2}
               </p>
             </div>
@@ -520,8 +520,8 @@ export default function App() {
         </motion.section>
 
         {/* ====== Sección Portafolio ====== */}
-        <motion.section 
-          id="portafolio" 
+        <motion.section
+          id="portafolio"
           variants={sectionVariants}
           initial="hidden"
           whileInView="visible"
@@ -529,12 +529,12 @@ export default function App() {
           className="py-24"
         >
           <div className="container mx-auto px-6">
-            <h2 className="text-4xl font-['Playfair_Display'] font-bold text-center text-[#4A2E5F] mb-4">{t.portfolio.title}</h2>
-            <p className="text-lg text-center text-[#6D4C82] mb-12">{t.portfolio.subtitle}</p>
+            <h2 className="text-4xl font-['Playfair_Display'] font-bold text-center text-[#1A1A1A] mb-4">{t.portfolio.title}</h2>
+            <p className="text-lg text-center text-[#4A4A4A] mb-12">{t.portfolio.subtitle}</p>
           </div>
 
           {/* ====== Carrusel Infinito ====== */}
-          <div 
+          <div
             className="w-full overflow-hidden"
           >
             <div className="flex w-max hover:pause-animation animate-infinite-scroll">
@@ -542,23 +542,23 @@ export default function App() {
               {[...projectData, ...projectData].map((project, index) => {
                 const details = t.portfolio.itemDetails[project.id];
                 return (
-                  <motion.div 
+                  <motion.div
                     key={`${project.id}-${index}`}
                     className="portfolio-item group relative overflow-hidden rounded-lg cursor-pointer flex-shrink-0 w-80 md:w-96 mx-4"
                     onClick={() => setSelectedProject(project)}
-                    whileHover={{ scale: 1.05, rotate: 1 }} 
-                    transition={{ 
-                      type: 'spring', 
-                      stiffness: 200, 
+                    whileHover={{ scale: 1.05, rotate: 1 }}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 200,
                       damping: 15,
                       mass: 1
                     }}
                   >
-                    <img 
-                      src={project.imgSrc.replace('800x600', '500x500')} 
+                    <img
+                      src={project.imgSrc}
                       alt={details.title}
-                      className="w-full h-full object-cover pointer-events-none" 
-                      onError={(e) => e.target.src='https://placehold.co/500x500/cccccc/999999?text=Error&font=poppins'}/>
+                      className="w-full h-full object-cover pointer-events-none"
+                      onError={(e) => e.target.src = 'https://placehold.co/500x500/cccccc/999999?text=Error&font=poppins'} />
                     <div className="absolute inset-0 flex items-center justify-center p-6 text-center text-white bg-black bg-opacity-0 group-hover:bg-opacity-70 opacity-0 group-hover:opacity-100 transition-all duration-300">
                       <div>
                         <h3 className="text-2xl font-['Playfair_Display'] mb-2">{details.title}</h3>
@@ -573,38 +573,34 @@ export default function App() {
         </motion.section>
 
         {/* ====== Sección Proceso Creativo ====== */}
-        <motion.section 
-          id="proceso" 
+        <motion.section
+          id="proceso"
           variants={sectionVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
-          className="py-24 bg-white" 
+          className="py-24 bg-white"
         >
           <div className="container mx-auto px-6">
-            <h2 className="text-4xl font-['Playfair_Display'] font-bold text-center text-[#4A2E5F] mb-4">{t.process.title}</h2>
-            <p className="text-lg text-center text-[#6D4C82] mb-12">{t.process.subtitle}</p>
-            
+            <h2 className="text-4xl font-['Playfair_Display'] font-bold text-center text-[#1A1A1A] mb-4">{t.process.title}</h2>
+            <p className="text-lg text-center text-[#4A4A4A] mb-12">{t.process.subtitle}</p>
+
             <div className="flex flex-wrap justify-center gap-6">
-              <img src="https://placehold.co/400x300/f0f0f0/cccccc?text=Quick+Sketch&font=poppins" 
-                   alt={t.process.alt1}
-                   className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 fade-image-edges" 
-                   onError={(e) => e.target.src='https://placehold.co/400x300/f0f0f0/8B5CF6?text=Sketch&font=poppins'}/>
-              <img src="https://placehold.co/400x300/f0f0f0/cccccc?text=Color+Palette&font=poppins" 
-                   alt={t.process.alt2}
-                   className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 fade-image-edges" 
-                   onError={(e) => e.target.src='https://placehold.co/400x300/f0f0f0/8B5CF6?text=Colors&font=poppins'}/>
-              <img src="https://placehold.co/400x300/f0f0f0/cccccc?text=Digital+Lineart&font=poppins" 
-                   alt={t.process.alt3}
-                   className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 fade-image-edges" 
-                   onError={(e) => e.target.src='https://placehold.co/400x300/f0f0f0/8B5CF6?text=Lineart&font=poppins'}/>
+              <img src="/img/miproceso1.jpg"
+                alt={t.process.alt1}
+                className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 fade-image-edges"
+                onError={(e) => e.target.src = 'https://placehold.co/400x300/f0f0f0/1A1A1A?text=Sketch&font=poppins'} />
+              <img src="/img/miproceso2.jpg"
+                alt={t.process.alt2}
+                className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 fade-image-edges"
+                onError={(e) => e.target.src = 'https://placehold.co/400x300/f0f0f0/1A1A1A?text=Colors&font=poppins'} />
             </div>
           </div>
         </motion.section>
 
         {/* ====== Sección Contacto ====== */}
-        <motion.section 
-          id="contacto" 
+        <motion.section
+          id="contacto"
           variants={sectionVariants}
           initial="hidden"
           whileInView="visible"
@@ -612,44 +608,44 @@ export default function App() {
           className="py-24"
         >
           <div className="container mx-auto px-6 text-center max-w-3xl">
-            <h2 className="text-4xl font-['Playfair_Display'] font-bold text-[#4A2E5F] mb-6">
+            <h2 className="text-4xl font-['Playfair_Display'] font-bold text-[#1A1A1A] mb-6">
               {t.contact.title}
             </h2>
-            <p className="text-xl text-[#6D4C82] mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-[#4A4A4A] mb-8 max-w-2xl mx-auto">
               {t.contact.subtitle}
             </p>
 
             <div className="flex justify-center space-x-6 md:space-x-12 mt-12">
               {/* Instagram */}
-              <motion.a 
-                href="#" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-[#6D4C82] hover:text-[#8B5CF6] transition-colors duration-200" 
+              <motion.a
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#4A4A4A] hover:text-[#000000] transition-colors duration-200"
                 aria-label={t.contact.ariaInsta}
                 whileHover={{ scale: 1.1, y: -5 }}
               >
                 {/* CAMBIO: Icono profesional */}
                 <Instagram className="w-10 h-10" strokeWidth={1.5} />
               </motion.a>
-              
+
               {/* TikTok */}
-              <motion.a 
-                href="#" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-[#6D4C82] hover:text-[#8B5CF6] transition-colors duration-200" 
+              <motion.a
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#4A4A4A] hover:text-[#000000] transition-colors duration-200"
                 aria-label={t.contact.ariaTiktok}
                 whileHover={{ scale: 1.1, y: -5 }}
               >
                 {/* CAMBIO: Icono profesional (Tiktok no existe, usamos MessageCircle) */}
                 <MessageCircle className="w-10 h-10" strokeWidth={1.5} />
               </motion.a>
-              
+
               {/* Mail */}
-              <motion.a 
-                href={`mailto:${t.contact.mail}`} 
-                className="text-[#6D4C82] hover:text-[#8B5CF6] transition-colors duration-200" 
+              <motion.a
+                href={`mailto:${t.contact.mail}`}
+                className="text-[#4A4A4A] hover:text-[#000000] transition-colors duration-200"
                 aria-label={t.contact.ariaMail}
                 whileHover={{ scale: 1.1, y: -5 }}
               >
@@ -657,12 +653,12 @@ export default function App() {
                 <Mail className="w-10 h-10" strokeWidth={1.5} />
               </motion.a>
             </div>
-            
+
           </div>
         </motion.section>
-        
+
       </main>
-      
+
       {/* ====== Footer ====== */}
       <footer className="bg-white py-10">
         <div className="container mx-auto px-6 text-center text-gray-600">
@@ -673,10 +669,10 @@ export default function App() {
       {/* ====== Modal del Portafolio (AnimatePresence) ====== */}
       <AnimatePresence>
         {selectedProject && (
-          <PortfolioModal 
+          <PortfolioModal
             project={selectedProject}
             details={t.portfolio.itemDetails[selectedProject.id]}
-            onClose={() => setSelectedProject(null)} 
+            onClose={() => setSelectedProject(null)}
           />
         )}
       </AnimatePresence>
