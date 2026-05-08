@@ -104,7 +104,7 @@ const translations = {
       ariaMail: 'Email',
     },
     footer: {
-      copy: '© 2025 SoniaArt. Všetky práva vyhradené.',
+      copy: 'Create by Chesterchasis',
     },
   },
 };
