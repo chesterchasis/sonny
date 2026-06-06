@@ -1,4 +1,35 @@
-    @tailwind base;
-    @tailwind components;
-    @tailwind utilities;
-    
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .noise-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.04;
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuCDt61eFDoLRp0AzlZieYKXjMZkKGOSUI33G293Su1A2_X-VRwY63tZ10QlmU6XHVWOLIYEKZPzEUG5DUXxxBWzgmWaKVfemhubFXtf9TmXpYDPMAuKEtMoW4Y-ZzDXnam5G-XzN-4zPzTE7DjOuyPsBC0MPOpEt8jzsw6WetD63OWwYEzoVqZjYemczDzypVgXSY-P5PgBKiOGKt8OhZOkOfHTeH-BnCNzJc9w0r7jMGz29VHxZQ0LTSSnx0futh2_5MGyCfIqExo)
+  }
+  .glass-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2)
+  }
+  .ink-splash {
+    filter: blur(60px);
+    border-radius: 50%;
+    z-index: -1
+  }
+  .scroll-hide::-webkit-scrollbar {
+    display: none
+  }
+  .scroll-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none
+  }
+}

@@ -1,656 +1,280 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-// IMPORTACIÓN ELIMINADA: Ya no usamos react-scroll
-// import { Link as ScrollLink } from 'react-scroll'; 
-// IMPORTACIÓN AÑADIDA: Para los iconos
-import { Home, User, GalleryVerticalEnd, Mail, Instagram } from 'lucide-react';
 
-// --- Datos del Portafolio (Separados de las traducciones) ---
-// NOTA: Cambia estas URLs por tus imágenes locales, ej: '/img/proyecto-1.jpg'
-// Coloca esas imágenes en la carpeta `public/img/` de tu proyecto Vite.
+// --- Datos del Portafolio ---
 const projectData = [
-  { id: 1, imgSrc: "https://raw.githubusercontent.com/chesterchasis/sonny/refs/heads/main/public/img/porfolio1.jpg" },
-  { id: 2, imgSrc: "https://raw.githubusercontent.com/chesterchasis/sonny/refs/heads/main/public/img/porfolio2.jpg" },
-  { id: 3, imgSrc: "https://raw.githubusercontent.com/chesterchasis/sonny/refs/heads/main/public/img/porfolio3.jpg" },
+  { id: 1, imgSrc: `${import.meta.env.BASE_URL}img/porfolio1.jpg` },
+  { id: 2, imgSrc: `${import.meta.env.BASE_URL}img/porfolio2.jpg` },
+  { id: 3, imgSrc: `${import.meta.env.BASE_URL}img/porfolio3.jpg` },
 ];
 
 // --- Traducciones (Inglés y Eslovaco) ---
 const translations = {
   en: {
-    nav: {
-      home: 'Home',
-      about: 'About Me',
-      portfolio: 'Portfolio',
-      contact: 'Contact',
-    },
-    hero: {
-      greeting: "Hi, I'm Sonia 🎨",
-      subtitle: "Graphic design student and visual art lover.",
-      cta: "View my work",
-    },
+    nav: { home: 'HOME', about: 'ABOUT', portfolio: 'GALLERY', contact: 'CONTACT' },
+    hero: { greeting: "Hi, I'm Sonia", subtitle: "Digital Artist & Graphic Designer" },
     about: {
-      title: 'About Me',
-      p1: 'I am a Graphic Design student at the <strong>High School of Visual Arts</strong>. I am passionate about digital illustration, typography, and how vivid colors can tell a story.',
-      p2: 'I am currently exploring new drawing techniques and design software. My goal is to keep learning and create projects that inspire and connect with people.',
+      title: 'The Muse',
+      p1: 'I believe in the quiet power of the digital canvas—where intentional strokes meet the tactile soul of traditional media. My work is a bridge between the precision of pixels and the beautiful imperfection of a graphite sketch.',
+      p2: 'Based in the digital ether, I curate experiences that prioritize intellectual depth and visual calm. Every project is an exploration of grid tension, modern editorial flair, and the delicate dance of high-contrast typography.',
+      cta: 'READ THE FULL STORY'
     },
-    portfolio: {
-      title: 'Portfolio',
-      subtitle: 'A selection of my favorite works.',
-      modalClose: 'Close',
-      // Detalles de los items (solo texto)
-      itemDetails: {
-        1: { title: "Floral Portrait", desc: "Digital illustration (Procreate). A piece exploring the blend of nature and human form." },
-        2: { title: "Hands", desc: "Graphite drawing (Traditional). A study on light, shadow, and anatomy." },
-        3: { title: "Poster Design", desc: "School project (Typography). Created for a fictional music festival, focusing on bold type." },
-      }
+    portfolio: { title: 'Curated Gallery', subtitle: 'SELECTED WORKS' },
+    itemDetails: {
+      1: { title: "Ephemeral Flow", desc: "DIGITAL PAINTING" },
+      2: { title: "Grid Tension", desc: "EDITORIAL DESIGN" },
+      3: { title: "Digital Soul", desc: "ILLUSTRATION" },
     },
     process: {
-      title: 'My Process',
-      subtitle: 'Here I share part of my process and what inspires me to create.',
-      alt1: 'Quick sketch in a notebook',
-      alt2: 'Color palette test',
-      alt3: 'Digital lineart on a tablet',
+      title: 'The Alchemy',
+      step1Title: 'The Spark', step1Desc: 'Everything begins with a visceral reaction. A word, a shadow, a fleeting thought captured in its rawest form. I start with physical media to ground the idea in reality before it migrates to the digital realm.',
+      step2Title: 'The Execution', step2Desc: 'This is where structure meets soul. I refine the chaos using strict grids and deliberate color palettes. Every pixel is placed with intention, ensuring the final piece maintains the breath of the original sketch while embracing digital clarity.'
     },
     contact: {
-      title: 'Let\'s connect!',
-      subtitle: 'Interested in collaborating or just want to chat? Contact me via my email or social media. 💌',
-      mail: 'kortisova.sona2008@gmail.com',
-      ariaInsta: 'Instagram',
-      ariaMail: 'Email',
+      title: "Have a vision in mind?", subtitle: "LET'S CREATE",
+      mail: 'kortisova.sona2008@gmail.com', cta: "SEND INQUIRY",
+      placeholder: 'YOUR EMAIL'
     },
-    footer: {
-      copy: '© 2025 SoniaArt. All rights reserved.',
-    },
+    footer: { copy: '© 2024 DIGITAL ARTIST STUDIO. ALL RIGHTS RESERVED.' },
   },
   sk: {
-    nav: {
-      home: 'Domov',
-      about: 'O mne',
-      portfolio: 'Portfólio',
-      contact: 'Kontakt',
-    },
-    hero: {
-      greeting: 'Ahoj, som Sonia 🎨',
-      subtitle: 'Študentka grafického dizajnu a milovníčka vizuálneho umenia.',
-      cta: 'Pozri moju prácu',
-    },
+    nav: { home: 'DOMOV', about: 'O MNE', portfolio: 'GALÉRIA', contact: 'KONTAKT' },
+    hero: { greeting: 'Ahoj, som Sonia', subtitle: 'Digitálna umelkyňa a grafická dizajnérka' },
     about: {
-      title: 'O mne',
-      p1: 'Som študentka grafického dizajnu na <strong>Strednej škole vizuálneho umenia</strong>. Mojou vášňou je digitálna ilustrácia, typografia a to, ako živé farby dokážu rozprávať príbeh.',
-      p2: 'Momentálne objavujem nové techniky kreslenia a dizajnový softvér. Mojím cieľom je naďalej sa učiť a vytvárať projekty, ktoré inšpirujú a spájajú ľudí.',
+      title: 'Múza',
+      p1: 'Verím v tichú silu digitálneho plátna – kde sa zámerné ťahy stretávajú s hmatateľnou dušou tradičných médií. Moja práca je mostom medzi presnosťou pixelov a krásnou nedokonalosťou grafitovej skice.',
+      p2: 'Vychádzajúc z digitálneho éteru vytváram zážitky, ktoré uprednostňujú intelektuálnu hĺbku a vizuálny pokoj. Každý projekt je skúmaním napätia mriežky, moderného redakčného štýlu a jemného tanca vysoko kontrastnej typografie.',
+      cta: 'ČÍTAŤ CELÝ PRÍBEH'
     },
-    portfolio: {
-      title: 'Portfólio',
-      subtitle: 'Výber mojich obľúbených prác.',
-      modalClose: 'Zavrieť',
-      itemDetails: {
-        1: { title: "Kvetinový portrét", desc: "Digitálna ilustrácia (Procreate). Dielo skúmajúce spojenie prírody a ľudskej podoby." },
-        2: { title: "Ruky", desc: "Kresba grafitom (Tradičná). Štúdia svetla, tieňa a anatómie." },
-        3: { title: "Dizajn plagátu", desc: "Školský projekt (Typografia). Vytvorené pre fiktívny hudobný festival so zameraním na výrazné písmo." },
-      }
+    portfolio: { title: 'Vybraná galéria', subtitle: 'VYBRANÉ PRÁCE' },
+    itemDetails: {
+      1: { title: "Pominuteľný tok", desc: "DIGITÁLNA MAĽBA" },
+      2: { title: "Napätie mriežky", desc: "REDAKČNÝ DIZAJN" },
+      3: { title: "Digitálna duša", desc: "ILUSTRÁCIA" },
     },
     process: {
-      title: 'Môj proces',
-      subtitle: 'Tu zdieľam časť môjho procesu a čo ma inšpiruje k tvorbe.',
-      alt1: 'Rýchla skica v zošite',
-      alt2: 'Test farebnej palety',
-      alt3: 'Digitálny lineart na tablete',
+      title: 'Alchýmia',
+      step1Title: 'Iskra', step1Desc: 'Všetko začína viscerálnou reakciou. Slovo, tieň, prchavá myšlienka zachytená v najsurovejšej podobe. Začínam s fyzickými médiami, aby som ukotvila myšlienku v realite predtým, ako prejde do digitálnej sféry.',
+      step2Title: 'Realizácia', step2Desc: 'Tu sa štruktúra stretáva s dušou. Zjemňujem chaos pomocou prísnych mriežok a premyslených farebných paliet. Každý pixel je umiestnený zámerne, čím sa zabezpečí, že výsledné dielo si zachováva dych pôvodnej skice a zároveň využíva digitálnu čistotu.'
     },
     contact: {
-      title: 'Spojme sa!',
-      subtitle: 'Máte záujem o spoluprácu alebo sa chcete len porozprávať? Kontaktujte ma e-mailom alebo sociálnych sieťach. 💌',
-      mail: 'kortisova.sona2008@gmail.com',
-      ariaInsta: 'Instagram',
-      ariaMail: 'Email',
+      title: "Máte na mysli víziu?", subtitle: "TVORME SPOLU",
+      mail: 'kortisova.sona2008@gmail.com', cta: "POSLAŤ DOPYT",
+      placeholder: 'VÁŠ EMAIL'
     },
-    footer: {
-      copy: 'Create by Chesterchasis',
-    },
-  },
-};
-
-// --- Componente de Estilos Globales ---
-const GlobalStyles = () => (
-  <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap');
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #FFFFFF; /* Fondo blanco puro */
-      color: #1A1A1A; /* Color de texto principal casi negro */
-    }
-    h1, h2, h3, h4, h5, h6, .font-playfair {
-      font-family: 'Playfair Display', serif;
-    }
-    
-    /* Configuración de scroll suave y scrollbar personalizada */
-    html {
-      scroll-padding-top: 80px; /* Ajuste para el header fijo */
-      scrollbar-width: thin;
-      scrollbar-color: #666666 #F3F4F6;
-    }
-    
-    /* Personalización de scrollbar para webkit (Chrome, Safari, etc.) */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    
-    ::-webkit-scrollbar-track {
-      background: #F3F4F6;
-    }
-    
-    ::-webkit-scrollbar-thumb {
-      background-color: #666666;
-      border-radius: 4px;
-      transition: all 0.3s ease;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-      background-color: #444444;
-    }
-    
-    /* Clase para desvanecer bordes de imagen (degradado más amplio) */
-    .fade-image-edges {
-      -webkit-mask-image: radial-gradient(circle, black 45%, transparent 100%);
-      mask-image: radial-gradient(circle, black 45%, transparent 100%);
-    }
-
-    /* --- Animación de Scroll Infinito --- */
-    @keyframes infinite-scroll {
-      0% { transform: translateX(0%); }
-      100% { transform: translateX(-50%); }
-    }
-    
-    .animate-infinite-scroll {
-      animation: infinite-scroll 40s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
-    }
-
-    .hover\:pause-animation:hover {
-      animation-play-state: paused;
-      transition: transform 0.3s ease;
-      transform: scale(0.99);
-    }
-    
-    .nav-link {
-      @apply text-[#1A1A1A] hover:text-[#000000] transition-colors duration-200 cursor-pointer py-2;
-    }
-    .nav-link.active {
-      /* Este 'active' es manejado por react-scroll, pero lo dejamos por si acaso */
-      @apply text-[#000000] font-semibold;
-    }
-    
-  `}</style>
-);
-
-// --- Componente Modal del Portafolio (Nuevo) ---
-const PortfolioModal = ({ project, details, onClose }) => {
-  return (
-    <motion.div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      {/* Backdrop */}
-      <motion.div
-        className="absolute inset-0 bg-black bg-opacity-75"
-        onClick={onClose}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      ></motion.div>
-
-      {/* Contenido del Modal */}
-      <motion.div
-        className="relative z-10 w-full max-w-4xl bg-white rounded-lg shadow-xl overflow-hidden"
-        initial={{ scale: 0.9, y: 50 }}
-        animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.9, y: 50 }}
-        transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-gray-400 hover:text-gray-900 z-20"
-          aria-label={details.modalClose}
-        >
-          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-
-        <div className="grid md:grid-cols-2">
-          {/* Imagen */}
-          <div className="bg-gray-100 flex items-center justify-center">
-            <img
-              src={project.imgSrc}
-              alt={details.title}
-              className="w-full h-full object-cover max-h-[80vh]"
-              onError={(e) => e.target.src = 'https://placehold.co/800x600/cccccc/999999?text=Image+Not+Found&font=poppins'}
-            />
-          </div>
-          {/* Detalles */}
-          <div className="p-8 flex flex-col justify-center">
-            <h3 className="text-3xl font-['Playfair_Display'] font-bold text-gray-900 mb-4">{details.title}</h3>
-            <p className="text-lg text-gray-700 leading-relaxed">
-              {details.desc}
-            </p>
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
+    footer: { copy: '© 2024 DIGITAL ARTIST STUDIO. VŠETKY PRÁVA VYHRADENÉ.' },
+  }
 };
 
 
-// --- Componente Principal de la App ---
 export default function App() {
-  const [lang, setLang] = useState('en'); // 'en' o 'sk'
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState(null); // Para el modal
+  const [lang, setLang] = useState('en');
+  const [activeSection, setActiveSection] = useState('hero');
+  const t = translations[lang];
 
-  const t = translations[lang]; // Objeto de traducción actual
-
-  // Variantes de animación para Framer Motion
-  const sectionVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" }
-    }
-  };
-
-  // Bloquear scroll del body cuando el modal está abierto
   useEffect(() => {
-    if (selectedProject) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-    // Cleanup
-    return () => { document.body.style.overflow = 'auto'; };
-  }, [selectedProject]);
-
-  // Función de scroll suave mejorada con animación personalizada
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const headerOffset = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-      const duration = 1000; // Duración en ms (1.5 segundos)
-      const start = window.pageYOffset;
-      const distance = offsetPosition - start;
-      let startTime = null;
-
-      function animation(currentTime) {
-        if (startTime === null) startTime = currentTime;
-        const timeElapsed = currentTime - startTime;
-        const progress = Math.min(timeElapsed / duration, 1);
-
-        // Función de easing para un movimiento más suave
-        const easing = t => t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
-
-        window.scrollTo(0, start + (distance * easing(progress)));
-
-        if (timeElapsed < duration) {
-          requestAnimationFrame(animation);
+    const handleScroll = () => {
+      const sections = ['hero', 'gallery', 'about', 'process', 'contact'];
+      let current = '';
+      for (const section of sections) {
+        const el = document.getElementById(section);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.clientHeight;
+          if (window.scrollY >= top - height / 3) {
+            current = section;
+          }
         }
       }
+      setActiveSection(current);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-      requestAnimationFrame(animation);
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  // Efecto para manejar el scroll suave en la carga inicial si hay hash en la URL
-  useEffect(() => {
-    if (window.location.hash) {
-      const id = window.location.hash.substring(1);
-      setTimeout(() => {
-        scrollToSection(id);
-      }, 100);
-    }
-  }, []);
-
-  const LangButton = ({ code, children }) => (
-    <button
-      onClick={() => setLang(code)}
-      className={`font-medium ${lang === code ? 'text-[#000000] font-bold' : 'text-gray-500 hover:text-gray-900'}`}
-    >
-      {children}
-    </button>
-  );
-
   return (
-    // CAMBIO: Eliminado HelmetProvider
-    <>
-      <GlobalStyles />
-      {/* CAMBIO: Eliminado Helmet */}
-
-      {/* ====== Header / Navbar ====== */}
-      <header className="fixed top-0 left-0 w-full bg-white bg-opacity-90 backdrop-blur-md shadow-sm z-50 transition-all duration-300">
-        <div className="container mx-auto px-6 py-4">
-          <nav className="flex justify-between items-center">
-            {/* Logo */}
-            {/* CAMBIO: Usando <a> con onClick */}
-            <a
-              onClick={() => scrollToSection('inicio')}
-              className="text-3xl font-['Playfair_Display'] font-bold text-[#1A1A1A] cursor-pointer"
-            >
-              Sonia<span className="text-[#000000]">Art</span>
-            </a>
-
-            {/* Menú de escritorio */}
-            <div className="hidden md:flex items-center space-x-8">
-              {/* CAMBIO: Usando <a> con onClick */}
-              <a onClick={() => scrollToSection('inicio')} className="nav-link">{t.nav.home}</a>
-              <a onClick={() => scrollToSection('sobre-mi')} className="nav-link">{t.nav.about}</a>
-              <a onClick={() => scrollToSection('portafolio')} className="nav-link">{t.nav.portfolio}</a>
-              <a onClick={() => scrollToSection('contacto')} className="nav-link">{t.nav.contact}</a>
-
-              <div className="flex space-x-2 pl-4">
-                <LangButton code="en">EN</LangButton>
-                <span className="text-gray-300">|</span>
-                <LangButton code="sk">SK</LangButton>
-              </div>
-            </div>
-
-            {/* Botón de Menú Móvil */}
-            {/* CAMBIO: Lógica de animación del menú móvil */}
-            <div className="md:hidden flex items-center space-x-2">
-              <AnimatePresence mode="wait">
-                {!isMenuOpen ? (
-                  // Estado 1: Menú CERRADO. Muestra botones de idioma
-                  <motion.div
-                    key="lang"
-                    // CAMBIO: Animación más suave
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
-                    transition={{ duration: 0.2, ease: 'easeInOut' }}
-                    className="flex items-center space-x-2"
-                  >
-                    <LangButton code="en">EN</LangButton>
-                    <span className="text-gray-300">|</span>
-                    <LangButton code="sk">SK</LangButton>
-                  </motion.div>
-                ) : (
-                  // Estado 2: Menú ABIERTO. Muestra iconos de navegación
-                  <motion.div
-                    key="icons"
-                    // CAMBIO: Animación más suave (misma dirección)
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
-                    transition={{ duration: 0.2, ease: 'easeInOut' }}
-                    className="flex items-center space-x-4"
-                  >
-                    {/* CAMBIO: Usando <a> con onClick */}
-                    <a onClick={() => { scrollToSection('inicio'); setIsMenuOpen(false); }} className="text-[#1A1A1A] hover:text-[#000000] cursor-pointer" aria-label={t.nav.home}>
-                      <Home className="w-6 h-6" strokeWidth={1.5} />
-                    </a>
-                    {/* CAMBIO: Usando <a> con onClick */}
-                    <a onClick={() => { scrollToSection('sobre-mi'); setIsMenuOpen(false); }} className="text-[#1A1A1A] hover:text-[#000000] cursor-pointer" aria-label={t.nav.about}>
-                      <User className="w-6 h-6" strokeWidth={1.5} />
-                    </a>
-                    {/* CAMBIO: Usando <a> con onClick */}
-                    <a onClick={() => { scrollToSection('portafolio'); setIsMenuOpen(false); }} className="text-[#1A1A1A] hover:text-[#000000] cursor-pointer" aria-label={t.nav.portfolio}>
-                      <GalleryVerticalEnd className="w-6 h-6" strokeWidth={1.5} />
-                    </a>
-                    {/* CAMBIO: Usando <a> con onClick */}
-                    <a onClick={() => { scrollToSection('contacto'); setIsMenuOpen(false); }} className="text-[#1A1A1A] hover:text-[#000000] cursor-pointer" aria-label={t.nav.contact}>
-                      <Mail className="w-6 h-6" strokeWidth={1.5} />
-                    </a>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Icono de Hamburguesa / Cerrar */}
-              <button onClick={() => setIsMenuOpen(is => !is)} className="text-[#1A1A1A] focus:outline-none z-10">
-                <AnimatePresence mode="wait">
-                  {!isMenuOpen ? (
-                    <motion.svg
-                      key="hamburger"
-                      initial={{ opacity: 0, rotate: -90 }}
-                      animate={{ opacity: 1, rotate: 0 }}
-                      exit={{ opacity: 0, rotate: -90 }}
-                      transition={{ duration: 0.2 }}
-                      className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                    </motion.svg>
-                  ) : (
-                    <motion.svg
-                      key="close"
-                      initial={{ opacity: 0, rotate: 90 }}
-                      animate={{ opacity: 1, rotate: 0 }}
-                      exit={{ opacity: 0, rotate: 90 }}
-                      transition={{ duration: 0.2 }}
-                      className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </motion.svg>
-                  )}
-                </AnimatePresence>
-              </button>
-            </div>
-          </nav>
+    <div className="bg-surface text-on-background font-body-md selection:bg-tertiary-fixed selection:text-on-tertiary-fixed relative">
+      <div className="noise-overlay"></div>
+      
+      {/* Header Navigation Shell */}
+      <header className="bg-surface/60 dark:bg-surface-container/60 backdrop-blur-[32px] text-primary dark:text-on-primary-fixed fixed top-0 w-full z-50 border-b border-outline-variant/30 flex justify-between items-center px-margin-mobile h-20">
+        <span className="font-headline-md text-headline-md tracking-tighter text-primary dark:text-on-primary-fixed cursor-pointer" onClick={() => scrollToSection('hero')}>
+          STUDIO
+        </span>
+        <div className="flex items-center gap-unit-4">
+          <button onClick={() => setLang(lang === 'en' ? 'sk' : 'en')} className="font-label-caps text-label-caps border border-primary px-3 py-1 rounded hover:bg-primary hover:text-on-primary transition-all">
+            {lang === 'en' ? 'SK' : 'EN'}
+          </button>
+          <span className="material-symbols-outlined text-primary transition-opacity duration-300 hover:opacity-70 cursor-pointer">menu</span>
         </div>
       </header>
 
-      {/* CAMBIO: Eliminado el menú lateral de emojis/iconos */}
-
-      <main>
-
-        {/* ====== Sección Hero ====== */}
-        <motion.section
-          id="inicio"
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          className="min-h-screen flex items-center pt-24 md:pt-0" // Añadido padding top para móvil
-        >
-          <div className="container mx-auto px-6 py-16 flex flex-col md:flex-row items-center justify-between">
-            {/* Texto Hero */}
-            <div className="w-full md:w-1/2 text-center md:text-left mb-10 md:mb-0">
-              <h1 className="text-5xl md:text-7xl font-['Playfair_Display'] font-bold text-[#1A1A1A] mb-4">
-                {t.hero.greeting}
-              </h1>
-              <p className="text-xl md:text-2xl text-[#4A4A4A] mb-8">
-                {t.hero.subtitle}
-              </p>
-              {/* CAMBIO: Usando <a> con onClick para el botón CTA */}
-              <motion.div
-                whileHover={{ scale: 1.05, y: -2 }}
-                transition={{ type: 'spring', stiffness: 300 }}
-              >
-                <a
-                  onClick={() => scrollToSection('portafolio')}
-                  className="inline-block bg-[#1A1A1A] text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-[#000000] hover:shadow-xl transition-all duration-300 cursor-pointer"
-                >
-                  {t.hero.cta}
-                </a>
-              </motion.div>
+      <main className="pt-20">
+        {/* Hero Section */}
+        <section className="relative min-h-[795px] flex flex-col items-center justify-center px-margin-mobile overflow-hidden" id="hero">
+          <div className="ink-splash absolute top-[-10%] right-[-10%] w-80 h-80 bg-[#ffdad9] opacity-60"></div>
+          <div className="ink-splash absolute bottom-[10%] left-[-20%] w-96 h-96 bg-[#e1dfdd] opacity-40"></div>
+          <div className="relative z-10 flex flex-col items-center text-center">
+            <div className="relative mb-unit-8">
+              <div className="absolute inset-0 border border-outline-variant rotate-[3deg] translate-x-2 translate-y-2 -z-10"></div>
+              <div className="w-64 h-80 glass-card overflow-hidden p-unit-2">
+                <img alt="Sonia Portrait" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" src={`${import.meta.env.BASE_URL}img/digitalart.jpg`} onError={(e) => e.target.src = 'https://lh3.googleusercontent.com/aida-public/AB6AXuBysIa6J9kRfrmlWztMLmPjzbq_kYAIS_HX-uXPeOWGC8_BjhO_DEha0nqyHxUG4dWWlhVmIlRL7WoTkbv79T6_nCmYObTV42JyTTyS6I7ajOIqQjTaHnh_vBVwR6I2dMGzV6UdFcCVaHeRL5orcdcGl998qDWfJvUE5Ewy_V3_6w50376ebf8uhWHOqhYSaSlFra30u4omvtirHpMIgVsNwmmmSeQ4RLWftQyo9Un6JoUooQVIiZN6vvGBn9uuxt4U_KBNZk8iVpY'}/>
+              </div>
             </div>
-
-            {/* Imagen Hero */}
-            <div className="w-full md:w-2/5">
-              <img src="https://raw.githubusercontent.com/chesterchasis/sonny/refs/heads/main/public/img/digitalart.jpg"
-                alt="Ilustración de Sonia"
-                className="w-full h-auto object-cover fade-image-edges"
-                onError={(e) => e.target.src = 'https://placehold.co/600x800/f0f0f0/1A1A1A?text=Digital+Art&font=playfair'} />
-            </div>
+            <h1 className="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg leading-tight mb-unit-4 text-primary">
+              {t.hero.greeting}
+            </h1>
+            <p className="font-label-caps text-label-caps text-secondary tracking-[0.2em] uppercase">{t.hero.subtitle}</p>
           </div>
-        </motion.section>
+        </section>
 
-        {/* ====== Sección Sobre Mí ====== */}
-        <motion.section
-          id="sobre-mi"
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          className="py-24 bg-white"
-        >
-          <div className="container mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-12">
-            <div className="w-full md:w-1/2 lg:w-2/5">
-              <img src="https://raw.githubusercontent.com/chesterchasis/sonny/refs/heads/main/public/img/aboutme.jpg"
-                alt="Espacio de trabajo de Sonia"
-                className="w-full h-auto object-cover aspect-square fade-image-edges"
-                onError={(e) => e.target.src = 'https://placehold.co/500x500/f0f0f0/1A1A1A?text=Sketches&font=playfair'} />
+        {/* Portfolio Gallery */}
+        <section className="bg-surface-container-low py-section-gap" id="gallery">
+          <div className="px-margin-mobile mb-unit-8 max-w-container-max mx-auto">
+            <p className="font-label-caps text-label-caps text-secondary mb-unit-2">{t.portfolio.subtitle}</p>
+            <h2 className="font-headline-lg text-headline-lg-mobile text-primary">{t.portfolio.title}</h2>
+          </div>
+          <div className="flex overflow-x-auto scroll-hide gap-unit-6 px-margin-mobile pb-unit-8">
+            {projectData.map((project, index) => {
+              const details = t.itemDetails[project.id] || { title: "Artwork", desc: "DIGITAL" };
+              return (
+                <div key={project.id} className="flex-none w-[80vw] md:w-[400px] group cursor-pointer relative">
+                  <div className={`absolute inset-0 border border-outline-variant ${index % 2 === 0 ? '-rotate-2' : 'rotate-1'} -z-10 group-hover:rotate-0 transition-transform duration-500`}></div>
+                  <div className="aspect-[4/3] overflow-hidden relative glass-card p-2">
+                    <img className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" src={project.imgSrc} alt={details.title} onError={(e) => e.target.src = 'https://placehold.co/800x600/cccccc/999999?text=Artwork&font=playfair'}/>
+                    <div className="absolute inset-0 bg-tertiary-container/80 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col items-center justify-center p-unit-4 text-center">
+                      <h3 className="font-headline-md text-headline-md text-on-tertiary-fixed">{details.title}</h3>
+                      <p className="font-label-caps text-label-caps text-on-tertiary-fixed/70 mt-unit-2">{details.desc}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* About Me Section */}
+        <section className="py-section-gap px-margin-mobile max-w-container-max mx-auto" id="about">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-unit-8 items-start">
+            <div className="md:col-span-4">
+              <h2 className="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary border-b border-outline-variant pb-unit-4 mb-unit-4">{t.about.title}</h2>
             </div>
-            <div className="w-full md:w-1/2 lg:w-3/5 text-center md:text-left">
-              <h2 className="text-4xl font-['Playfair_Display'] font-bold text-[#1A1A1A] mb-6">{t.about.title}</h2>
-              <p className="text-lg text-[#4A4A4A] leading-relaxed mb-4" dangerouslySetInnerHTML={{ __html: t.about.p1 }} />
-              <p className="text-lg text-[#4A4A4A] leading-relaxed">
+            <div className="md:col-span-8 space-y-unit-6">
+              <p className="font-body-lg text-body-lg text-on-surface-variant">
+                {t.about.p1}
+              </p>
+              <p className="font-body-md text-body-md text-secondary">
                 {t.about.p2}
               </p>
+              <div className="pt-unit-4">
+                <button className="border border-primary px-unit-6 py-unit-3 font-label-caps text-label-caps hover:bg-primary hover:text-on-primary transition-all duration-500">
+                  {t.about.cta}
+                </button>
+              </div>
             </div>
           </div>
-        </motion.section>
+        </section>
 
-        {/* ====== Sección Portafolio ====== */}
-        <motion.section
-          id="portafolio"
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          className="py-24"
-        >
-          <div className="container mx-auto px-6">
-            <h2 className="text-4xl font-['Playfair_Display'] font-bold text-center text-[#1A1A1A] mb-4">{t.portfolio.title}</h2>
-            <p className="text-lg text-center text-[#4A4A4A] mb-12">{t.portfolio.subtitle}</p>
-          </div>
-
-          {/* ====== Carrusel Infinito ====== */}
-          <div
-            className="w-full overflow-hidden"
-          >
-            <div className="flex w-max hover:pause-animation animate-infinite-scroll">
-              {/* Lista duplicada para el efecto de loop infinito */}
-              {[...projectData, ...projectData].map((project, index) => {
-                const details = t.portfolio.itemDetails[project.id];
-                return (
-                  <motion.div
-                    key={`${project.id}-${index}`}
-                    className="portfolio-item group relative overflow-hidden rounded-lg cursor-pointer flex-shrink-0 w-96 md:w-[32rem] mx-4"
-                    onClick={() => setSelectedProject(project)}
-                    whileHover={{ scale: 1.05, rotate: 1 }}
-                    transition={{
-                      type: 'spring',
-                      stiffness: 200,
-                      damping: 15,
-                      mass: 1
-                    }}
-                  >
-                    <img
-                      src={project.imgSrc}
-                      alt={details.title}
-                      className="w-full h-full object-cover pointer-events-none"
-                      onError={(e) => e.target.src = 'https://placehold.co/500x500/cccccc/999999?text=Error&font=poppins'} />
-                    <div className="absolute inset-0 flex items-center justify-center p-6 text-center text-white bg-black bg-opacity-0 group-hover:bg-opacity-70 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <div>
-                        <h3 className="text-2xl font-['Playfair_Display'] mb-2">{details.title}</h3>
-                        <p className="text-sm font-['Poppins'] opacity-90">{details.desc.substring(0, 50)}...</p>
-                      </div>
-                    </div>
-                  </motion.div>
-                )
-              })}
+        {/* My Process Section */}
+        <section className="py-section-gap px-margin-mobile" id="process">
+          <div className="max-w-container-max mx-auto">
+            <h2 className="font-headline-lg text-headline-lg-mobile text-primary text-center mb-section-gap/2">{t.process.title}</h2>
+            <div className="space-y-unit-8 relative">
+              {/* Step 1 */}
+              <div className="flex flex-col md:flex-row items-center gap-unit-6 relative">
+                <div className="w-full md:w-1/2 overflow-hidden border border-outline-variant p-2 rotate-[-1deg]">
+                  <img className="w-full h-64 object-cover filter contrast-125 brightness-90" src={`${import.meta.env.BASE_URL}img/miproceso1.jpg`} alt={t.process.step1Title} onError={(e) => e.target.src = 'https://lh3.googleusercontent.com/aida-public/AB6AXuDYdGojbNeH6TRKHLkdieGj9v37qBwUleI0WKgu1sXt9Z-_c-jmyUsrakCqSr04P983AoQTmdZ-eg7Zza6r7XFqj0r8stzdMU3r_Qgn2t1F860gxTesxxKju1QMS1OWGm3zaWz6iZuBM-k8sTHybKYC_-L3lF0k4ASTdem1XuNdgyyzA-BCyE9ccITcBaDf86_RCsaje5Qxs87smvscttfvoYn1tBPXoUIUQfTC7vb9OoChaOT8sjmxabjzO6VGGgpxj0vIQ0SAdX8'}/>
+                </div>
+                <div className="w-full md:w-1/2">
+                  <span className="font-label-caps text-label-caps text-primary block mb-unit-2">PHASE 01</span>
+                  <h3 className="font-headline-md text-headline-md mb-unit-4">{t.process.step1Title}</h3>
+                  <p className="text-secondary font-body-md">{t.process.step1Desc}</p>
+                </div>
+              </div>
+              {/* Visual Connector */}
+              <div className="hidden md:block h-20 w-px bg-outline-variant/30 mx-auto"></div>
+              {/* Step 2 */}
+              <div className="flex flex-col md:flex-row-reverse items-center gap-unit-6 relative">
+                <div className="w-full md:w-1/2 overflow-hidden border border-outline-variant p-2 rotate-[1deg]">
+                  <img className="w-full h-64 object-cover" src={`${import.meta.env.BASE_URL}img/miproceso2.jpg`} alt={t.process.step2Title} onError={(e) => e.target.src = 'https://lh3.googleusercontent.com/aida-public/AB6AXuCRSQUseLNK6VpNuptdM_-x3RGyhFw58z76fKAxzpnFC18CoJz2mNQp_cvdAw-i_1Jdaw4reI5gC7cbkPxKLewCldjTtHLttGJEZm5Eu2NHeeV7y6CsvyGmeWwMax0FQqPSDU-0D7UrulamVnMW1qebJMvn7_ECRxJu97Cj62anV4q4oroyCjPFqHDqM03KzmevE8_ANJC_kFUCTPwlch-gPczBBo-quMZf1UGuH1hA32uC6Ihz0LWN76BLVX1ElkwIdkoBk_rHX68'}/>
+                </div>
+                <div className="w-full md:w-1/2 text-left md:text-right">
+                  <span className="font-label-caps text-label-caps text-primary block mb-unit-2">PHASE 02</span>
+                  <h3 className="font-headline-md text-headline-md mb-unit-4">{t.process.step2Title}</h3>
+                  <p className="text-secondary font-body-md">{t.process.step2Desc}</p>
+                </div>
+              </div>
             </div>
           </div>
-        </motion.section>
+        </section>
 
-        {/* ====== Sección Proceso Creativo ====== */}
-        <motion.section
-          id="proceso"
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          className="py-24 bg-white"
-        >
-          <div className="container mx-auto px-6">
-            <h2 className="text-4xl font-['Playfair_Display'] font-bold text-center text-[#1A1A1A] mb-4">{t.process.title}</h2>
-            <p className="text-lg text-center text-[#4A4A4A] mb-12">{t.process.subtitle}</p>
-
-            <div className="flex flex-wrap justify-center gap-6">
-              <img src="https://raw.githubusercontent.com/chesterchasis/sonny/refs/heads/main/public/img/miproceso1.jpg"
-                alt={t.process.alt1}
-                className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 fade-image-edges"
-                onError={(e) => e.target.src = 'https://placehold.co/400x300/f0f0f0/1A1A1A?text=Sketch&font=poppins'} />
-              <img src="https://raw.githubusercontent.com/chesterchasis/sonny/refs/heads/main/public/img/miproceso2.jpg"
-                alt={t.process.alt2}
-                className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 fade-image-edges"
-                onError={(e) => e.target.src = 'https://placehold.co/400x300/f0f0f0/1A1A1A?text=Colors&font=poppins'} />
+        {/* Contact Section */}
+        <section className="bg-surface-container py-section-gap px-margin-mobile" id="contact">
+          <div className="max-w-xl mx-auto text-center">
+            <p className="font-label-caps text-label-caps text-primary mb-unit-4">{t.contact.subtitle}</p>
+            <h2 className="font-headline-lg text-headline-lg-mobile text-primary mb-unit-8">{t.contact.title}</h2>
+            <div className="space-y-unit-6 mb-unit-12">
+              <div className="group border-b border-outline-variant pb-unit-2">
+                <input className="w-full bg-transparent border-none focus:ring-0 text-center font-headline-md text-headline-md placeholder:text-outline/40" placeholder={t.contact.placeholder} type="email" />
+              </div>
+            </div>
+            <a className="inline-block border border-primary px-unit-10 py-unit-4 font-label-caps text-label-caps hover:bg-primary hover:text-on-primary transition-all duration-500 mb-unit-8" href={`mailto:${t.contact.mail}`}>
+              {t.contact.cta}
+            </a>
+            <div className="flex justify-center gap-unit-6">
+              <a className="font-label-caps text-label-caps text-secondary hover:text-primary transition-colors" href="https://www.instagram.com/sonia._.artwork?igsh=MTc4NTJjZjF1ZTF6aw==" target="_blank" rel="noopener noreferrer">INSTAGRAM</a>
+              <a className="font-label-caps text-label-caps text-secondary hover:text-primary transition-colors" href="#">BEHANCE</a>
+              <a className="font-label-caps text-label-caps text-secondary hover:text-primary transition-colors" href="#">LINKEDIN</a>
             </div>
           </div>
-        </motion.section>
-
-        {/* ====== Sección Contacto ====== */}
-        <motion.section
-          id="contacto"
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          className="py-24"
-        >
-          <div className="container mx-auto px-6 text-center max-w-3xl">
-            <h2 className="text-4xl font-['Playfair_Display'] font-bold text-[#1A1A1A] mb-6">
-              {t.contact.title}
-            </h2>
-            <p className="text-xl text-[#4A4A4A] mb-8 max-w-2xl mx-auto">
-              {t.contact.subtitle}
-            </p>
-
-            <div className="flex justify-center space-x-6 md:space-x-12 mt-12">
-              {/* Instagram */}
-              <motion.a
-                href="https://www.instagram.com/sonia._.artwork?igsh=MTc4NTJjZjF1ZTF6aw=="
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#4A4A4A] hover:text-[#000000] transition-colors duration-200"
-                aria-label={t.contact.ariaInsta}
-                whileHover={{ scale: 1.1, y: -5 }}
-              >
-                <Instagram className="w-10 h-10" strokeWidth={1.5} />
-              </motion.a>
-
-              {/* Mail */}
-              <motion.a
-                href={`mailto:${t.contact.mail}`}
-                className="text-[#4A4A4A] hover:text-[#000000] transition-colors duration-200"
-                aria-label={t.contact.ariaMail}
-                whileHover={{ scale: 1.1, y: -5 }}
-              >
-                <Mail className="w-10 h-10" strokeWidth={1.5} />
-              </motion.a>
-            </div>
-
-          </div>
-        </motion.section>
-
+        </section>
       </main>
 
-      {/* ====== Footer ====== */}
-      <footer className="bg-white py-10">
-        <div className="container mx-auto px-6 text-center text-gray-600">
-          <p className="text-sm">{t.footer.copy}</p>
+      {/* Footer Shell */}
+      <footer className="bg-surface dark:bg-surface-container w-full py-unit-8 border-t border-outline-variant flex flex-col items-center gap-unit-4 px-margin-mobile mb-16">
+        <span className="font-headline-md text-headline-md text-primary">STUDIO</span>
+        <div className="flex gap-unit-4">
+          <a className="font-label-caps text-label-caps text-secondary dark:text-secondary-fixed hover:text-primary transition-all" href="https://www.instagram.com/sonia._.artwork?igsh=MTc4NTJjZjF1ZTF6aw==" target="_blank" rel="noopener noreferrer">INSTAGRAM</a>
+          <a className="font-label-caps text-label-caps text-secondary dark:text-secondary-fixed hover:text-primary transition-all" href="#">BEHANCE</a>
+          <a className="font-label-caps text-label-caps text-secondary dark:text-secondary-fixed hover:text-primary transition-all" href="#">LINKEDIN</a>
         </div>
+        <p className="font-label-caps text-label-caps text-secondary/50 text-center">{t.footer.copy}</p>
       </footer>
 
-      {/* ====== Modal del Portafolio (AnimatePresence) ====== */}
-      <AnimatePresence>
-        {selectedProject && (
-          <PortfolioModal
-            project={selectedProject}
-            details={t.portfolio.itemDetails[selectedProject.id]}
-            onClose={() => setSelectedProject(null)}
-          />
-        )}
-      </AnimatePresence>
-    </>
+      {/* Bottom Nav Bar Shell */}
+      <nav className="bg-surface/60 dark:bg-surface-container/60 backdrop-blur-[32px] fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-margin-mobile border-t border-outline-variant/30 md:hidden">
+        <button onClick={() => scrollToSection('hero')} className={`${activeSection === 'hero' ? 'text-primary dark:text-on-primary-fixed scale-110' : 'text-secondary/50 dark:text-secondary-fixed-dim/50'} hover:text-primary dark:hover:text-on-primary-fixed transition-colors active:scale-95 transition-transform duration-200`}>
+          <span className="material-symbols-outlined">grid_view</span>
+        </button>
+        <button onClick={() => scrollToSection('gallery')} className={`${activeSection === 'gallery' ? 'text-primary dark:text-on-primary-fixed scale-110' : 'text-secondary/50 dark:text-secondary-fixed-dim/50'} hover:text-primary dark:hover:text-on-primary-fixed transition-colors active:scale-95 transition-transform duration-200`}>
+          <span className="material-symbols-outlined">brush</span>
+        </button>
+        <button onClick={() => scrollToSection('about')} className={`${activeSection === 'about' ? 'text-primary dark:text-on-primary-fixed scale-110' : 'text-secondary/50 dark:text-secondary-fixed-dim/50'} hover:text-primary dark:hover:text-on-primary-fixed transition-colors active:scale-95 transition-transform duration-200`}>
+          <span className="material-symbols-outlined">account_circle</span>
+        </button>
+        <button onClick={() => scrollToSection('process')} className={`${activeSection === 'process' ? 'text-primary dark:text-on-primary-fixed scale-110' : 'text-secondary/50 dark:text-secondary-fixed-dim/50'} hover:text-primary dark:hover:text-on-primary-fixed transition-colors active:scale-95 transition-transform duration-200`}>
+          <span className="material-symbols-outlined">auto_awesome</span>
+        </button>
+        <button onClick={() => scrollToSection('contact')} className={`${activeSection === 'contact' ? 'text-primary dark:text-on-primary-fixed scale-110' : 'text-secondary/50 dark:text-secondary-fixed-dim/50'} hover:text-primary dark:hover:text-on-primary-fixed transition-colors active:scale-95 transition-transform duration-200`}>
+          <span className="material-symbols-outlined">mail</span>
+        </button>
+      </nav>
+      
+      {/* Desktop Side Nav or additional nav logic could go here */}
+      <nav className="hidden md:flex bg-surface/60 dark:bg-surface-container/60 backdrop-blur-[32px] fixed top-0 right-0 h-20 items-center justify-end px-margin-mobile z-50 mr-16">
+        <div className="flex gap-unit-6">
+           <button onClick={() => scrollToSection('gallery')} className={`${activeSection === 'gallery' ? 'text-primary font-bold' : 'text-secondary'} font-label-caps text-label-caps hover:text-primary transition-colors`}>{t.nav.portfolio}</button>
+           <button onClick={() => scrollToSection('about')} className={`${activeSection === 'about' ? 'text-primary font-bold' : 'text-secondary'} font-label-caps text-label-caps hover:text-primary transition-colors`}>{t.nav.about}</button>
+           <button onClick={() => scrollToSection('contact')} className={`${activeSection === 'contact' ? 'text-primary font-bold' : 'text-secondary'} font-label-caps text-label-caps hover:text-primary transition-colors`}>{t.nav.contact}</button>
+        </div>
+      </nav>
+    </div>
   );
 }
-
